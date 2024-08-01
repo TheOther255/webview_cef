@@ -146,6 +146,22 @@ bool WebviewHandler::DoClose(CefRefPtr<CefBrowser> browser) {
 
 void WebviewHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
+
+    auto it = browser_map_.begin();
+    for(; it != browser_map_.end(); ++it) {
+        if(it->second.browser->IsSame(browser)) {
+            it->second.browser = nullptr;
+            //browser = nullptr;
+            browser_map_.erase(it);
+            break;
+        }
+    }
+
+    if(browser->HasAtLeastOneRef()) browser.release()->Release();
+
+    if(browser_map_.empty()) {
+        //CefQuitMessageLoop();
+    }
 }
 
 bool WebviewHandler::OnBeforePopup(CefRefPtr<CefBrowser> browser,
@@ -231,8 +247,8 @@ void WebviewHandler::closeBrowser(int browserId)
     auto it = browser_map_.find(browserId);
     if(it != browser_map_.end()){
         it->second.browser->GetHost()->CloseBrowser(true);
-        it->second.browser = nullptr;
-        browser_map_.erase(it);
+        //it->second.browser = nullptr;
+        //browser_map_.erase(it);
     }
 }
 
@@ -527,6 +543,11 @@ void WebviewHandler::setJavaScriptChannels(int browserId, const std::vector<std:
     {
         extensionCode += channel;
         extensionCode += " = (e,r) => {external.JavaScriptChannel('";
+        extensionCode += channel;
+        extensionCode += "',e,r)};";
+
+        extensionCode += channel;
+        extensionCode += ".postMessage = (e,r) => {external.JavaScriptChannel('";
         extensionCode += channel;
         extensionCode += "',e,r)};";
     }

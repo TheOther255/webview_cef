@@ -24,6 +24,7 @@ namespace webview_cef {
 		uninitCallback();
 		m_handler->CloseAllBrowsers(true);
 		m_handler = nullptr;
+		app = nullptr;
 		if(!m_renderers.empty()){
 			m_renderers.clear();
 		}
@@ -211,6 +212,8 @@ namespace webview_cef {
 		}
 		else if (name.compare("quit") == 0) {
 			//only call this method when you want to quit the app
+			m_handler = nullptr;
+			app = nullptr;
 			stopCEF();
 			result(1, nullptr);
 		}
@@ -514,6 +517,7 @@ namespace webview_cef {
 
     void stopCEF()
     {
-		CefShutdown();
+		CefQuitMessageLoop();
+		//CefShutdown();
     }
 }

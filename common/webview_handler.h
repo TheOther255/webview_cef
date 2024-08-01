@@ -35,7 +35,8 @@ public CefDisplayHandler,
 public CefLifeSpanHandler,
 public CefFocusHandler,
 public CefLoadHandler,
-public CefRenderHandler{
+public CefRenderHandler,
+public CefDownloadHandler{
 public:
     //Paint callback
     std::function<void(int browserId, const void* buffer, int32_t width, int32_t height)> onPaintCallback;
@@ -65,6 +66,21 @@ public:
     }
     virtual CefRefPtr<CefLoadHandler> GetLoadHandler() override { return this; }
     virtual CefRefPtr<CefRenderHandler> GetRenderHandler() override { return this; }
+    virtual CefRefPtr<CefDownloadHandler> GetDownloadHandler() override { return this; }
+
+    virtual bool CanDownload(CefRefPtr<CefBrowser> browser,
+                           const CefString& url,
+                           const CefString& request_method) override {printf("CanDownload\n"); return true;}
+
+    virtual void OnBeforeDownload(
+        CefRefPtr<CefBrowser> browser,
+        CefRefPtr<CefDownloadItem> download_item,
+        const CefString& suggested_name,
+        CefRefPtr<CefBeforeDownloadCallback> callback) override {printf("OnBeforeDownload\n");}
+
+    virtual void OnDownloadUpdated(CefRefPtr<CefBrowser> browser,
+                                 CefRefPtr<CefDownloadItem> download_item,
+                                 CefRefPtr<CefDownloadItemCallback> callback) override {printf("OnDownloadUpdated\n");}
 
 	bool OnProcessMessageReceived(
         CefRefPtr<CefBrowser> browser,

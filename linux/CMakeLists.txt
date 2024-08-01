@@ -12,7 +12,7 @@ project(${PROJECT_NAME} LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 17)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third/download.cmake)
-prepare_prebuilt_files(${CMAKE_CURRENT_SOURCE_DIR}/../third/cef)
+prepare_cef_files(${CMAKE_CURRENT_SOURCE_DIR}/../third/cef)
 
 set(CEF_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../third/cef")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CEF_ROOT}/cmake")
