@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late WebViewController _controller;
 
-  // late WebViewController _controller2;
+  late WebViewController _controller2;
   final _textController = TextEditingController();
   String title = "";
   Map allCookies = {};
@@ -26,10 +26,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     var injectUserScripts = InjectUserScripts();
-    injectUserScripts.add(UserScript("console.log('injectScript_in_LoadStart')",
-        ScriptInjectTime.LOAD_START));
-    injectUserScripts.add(UserScript(
-        "console.log('injectScript_in_LoadEnd')", ScriptInjectTime.LOAD_END));
+    injectUserScripts
+        .add(UserScript("console.log('injectScript_in_LoadStart')", ScriptInjectTime.LOAD_START));
+    injectUserScripts
+        .add(UserScript("console.log('injectScript_in_LoadEnd')", ScriptInjectTime.LOAD_END));
 
     // CSS Injection Script Example
     // injectUserScripts.add(UserScript(
@@ -47,10 +47,9 @@ class _MyAppState extends State<MyApp> {
     // ));
 
     _controller = WebviewManager().createWebView(
-        loading: const Text("not initialized"),
-        injectUserScripts: injectUserScripts);
-    // _controller2 =
-    //     WebviewManager().createWebView(loading: const Text("not initialized"));
+        loading: const Text("not initialized"), injectUserScripts: injectUserScripts);
+    _controller2 = WebviewManager().createWebView(
+        loading: const Text("not initialized"), injectUserScripts: InjectUserScripts());
     super.initState();
     initPlatformState();
   }
@@ -58,6 +57,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _controller.dispose();
+    _controller2.dispose();
     WebviewManager().quit();
     super.dispose();
   }
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     await WebviewManager().initialize(userAgent: "test/userAgent");
-    String url = "www.baidu.com";
+    String url = "www.github.com";
     _textController.text = url;
     //unified interface for all platforms set user agent
     _controller.setWebviewListener(WebviewEventsListener(
@@ -92,9 +92,7 @@ class _MyAppState extends State<MyApp> {
         _controller.setJavaScriptChannels(jsChannels);
         //also you can build your own jssdk by execute JavaScript code to CEF
         _controller.executeJavaScript("function abc(e){return 'abc:'+ e}");
-        _controller
-            .evaluateJavascript("abc('test')")
-            .then((value) => print(value));
+        _controller.evaluateJavascript("abc('test')").then((value) => print(value));
       },
       onLoadStart: (controller, url) {
         print("onLoadStart => $url");
@@ -106,26 +104,26 @@ class _MyAppState extends State<MyApp> {
 
     await _controller.initialize(_textController.text);
 
-    // _controller2.setWebviewListener(WebviewEventsListener(
-    //   onTitleChanged: (t) {},
-    //   onUrlChanged: (url) {
-    //     final Set<JavascriptChannel> jsChannels = {
-    //       JavascriptChannel(
-    //           name: 'Print',
-    //           onMessageReceived: (JavascriptMessage message) {
-    //             print(message.message);
-    //             _controller.sendJavaScriptChannelCallBack(
-    //                 false,
-    //                 "{'code':'200','message':'print succeed!'}",
-    //                 message.callbackId,
-    //                 message.frameId);
-    //           }),
-    //     };
-    //     //normal JavaScriptChannels
-    //     _controller2.setJavaScriptChannels(jsChannels);
-    //   },
-    // ));
-    // await _controller2.initialize("baidu.com");
+    _controller2.setWebviewListener(WebviewEventsListener(
+      onTitleChanged: (t) {},
+      onUrlChanged: (url) {
+        final Set<JavascriptChannel> jsChannels = {
+          JavascriptChannel(
+              name: 'Print',
+              onMessageReceived: (JavascriptMessage message) {
+                print(message.message);
+                _controller.sendJavaScriptChannelCallBack(
+                    false,
+                    "{'code':'200','message':'print succeed!'}",
+                    message.callbackId,
+                    message.frameId);
+              }),
+        };
+        //normal JavaScriptChannels
+        _controller2.setJavaScriptChannels(jsChannels);
+      },
+    ));
+    await _controller2.initialize("google.com");
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -215,14 +213,14 @@ class _MyAppState extends State<MyApp> {
                       : _controller.loadingWidget;
                 },
               ),
-              // ValueListenableBuilder(
-              //   valueListenable: _controller2,
-              //   builder: (context, value, child) {
-              //     return _controller2.value
-              //         ? Expanded(child: _controller2.webviewWidget)
-              //         : _controller2.loadingWidget;
-              //   },
-              // )
+              ValueListenableBuilder(
+                valueListenable: _controller2,
+                builder: (context, value, child) {
+                  return _controller2.value
+                      ? Expanded(child: _controller2.webviewWidget)
+                      : _controller2.loadingWidget;
+                },
+              )
             ],
           ))
         ],

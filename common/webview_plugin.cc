@@ -21,6 +21,7 @@ namespace webview_cef {
         }
 
     WebviewPlugin::~WebviewPlugin() {
+		std::cout << "CEF: destroy plugin" << std::endl;
 		uninitCallback();
 		m_handler->CloseAllBrowsers(true);
 		m_handler = nullptr;
@@ -231,7 +232,6 @@ namespace webview_cef {
 		m_init = false;
 	}
 
-
     void WebviewPlugin::HandleMethodCall(std::string name, WValue* values, std::function<void(int ,WValue*)> result) {
 		if (name.compare("init") == 0){
 			if(!isCefInitialized){
@@ -239,6 +239,7 @@ namespace webview_cef {
 					userAgent = CefString(webview_value_get_string(values));
 				}
 				startCEF();
+				isCefInitialized = true;
 			}
 			initCallback();
 			result(1, nullptr);
@@ -265,6 +266,7 @@ namespace webview_cef {
 			m_handler->closeBrowser(browserId);
 			if(m_renderers.find(browserId) != m_renderers.end() && m_renderers[browserId] != nullptr) {
 				m_renderers[browserId].reset();
+				m_renderers.erase(browserId);
 			}
 			result(1, nullptr);
 		}
@@ -511,6 +513,14 @@ namespace webview_cef {
 		}
 		return false;
 	}
+
+	void WebviewPlugin::setAllClosedCallback(std::function<void()> func) {
+		m_handler->onAllClosed = func;
+	}
+
+	void WebviewPlugin::closeAllBrowsers(bool force_close) {
+		m_handler->CloseAllBrowsers(force_close);
+	}
 	
 	int WebviewPlugin::cursorAction(WValue *args, std::string name) {
 		if (!args || webview_value_get_len(args) != 3) {
@@ -572,6 +582,9 @@ namespace webview_cef {
 		//cef message run in another thread on windows/linux
 		cefs.multi_threaded_message_loop = true;
 #endif
+		std::string home(std::getenv("HOME"));
+		home.append("/.cache/cef_cache");
+		CefString(&cefs.cache_path).FromASCII(home.c_str());
 		CefInitialize(mainArgs, cefs, app.get(), nullptr);
 	}
 
@@ -597,6 +610,9 @@ namespace webview_cef {
 
     void stopCEF()
     {
-		CefShutdown();
+		if(isCefInitialized) {
+			CefShutdown();
+			isCefInitialized = false;
+		}
     }
 }

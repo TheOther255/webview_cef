@@ -158,15 +158,30 @@ bool WebviewHandler::DoClose(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();    
     // Allow the close. For windowed browsers this will result in the OS close
     // event being sent.
+    std::cout << "CEF: DoClose: " << browser->GetIdentifier() << std::endl;
+    int browserId = browser->GetIdentifier();
+    auto it = browser_map_.find(browserId);
+    if(it != browser_map_.end()){
+        it->second.browser = nullptr;
+        browser_map_.erase(it);
+    }
+    
     return false;
 }
 
 void WebviewHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
+    std::cout << "CEF: OnBeforeClose: " << browser->GetIdentifier() << std::endl;
+    std::cout << "CEF browser_map size: " << browser_map_.size() << std::endl;
+    if (browser_map_.empty() && onAllClosed) {
+        std::cout << "emit signal delete-event" << std::endl;
+        onAllClosed();
+    }
 }
 
 bool WebviewHandler::OnBeforePopup(CefRefPtr<CefBrowser> browser,
                                   CefRefPtr<CefFrame> frame,
+                                  int popup_id,
                                   const CefString& target_url,
                                   const CefString& target_frame_name,
                                   WindowOpenDisposition target_disposition,
@@ -243,9 +258,7 @@ void WebviewHandler::CloseAllBrowsers(bool force_close) {
     
     for (auto& it : browser_map_){
         it.second.browser->GetHost()->CloseBrowser(force_close);
-        it.second.browser = nullptr;
     }
-    browser_map_.clear();
 }
 
 // static
@@ -261,6 +274,7 @@ bool WebviewHandler::IsChromeRuntimeEnabled() {
 
 void WebviewHandler::closeBrowser(int browserId)
 {
+    std::cout << "CEF: Close Browser: " << browserId << std::endl;
     auto it = browser_map_.find(browserId);
     if(it != browser_map_.end()){
         it->second.browser->GetHost()->CloseBrowser(true);

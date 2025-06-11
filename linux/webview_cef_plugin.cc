@@ -25,7 +25,7 @@ struct _WebviewCefPlugin
 G_DEFINE_TYPE(WebviewCefPlugin, webview_cef_plugin, g_object_get_type())
 
 std::unordered_map<int64_t, std::shared_ptr<webview_cef::WebviewPlugin>> webviewPlugins;
-
+bool isShuttingDown = false;
 class WebviewTextureRenderer : public webview_cef::WebviewTexture
 {
 public:
@@ -232,11 +232,12 @@ static void webview_cef_plugin_handle_method_call(
 
 static void webview_cef_plugin_dispose(GObject *object)
 {
+  g_print("dispose plugin\n");
   webviewPlugins.erase(WEBVIEW_CEF_PLUGIN(object)->m_window);
   WEBVIEW_CEF_PLUGIN(object)->m_plugin = nullptr; 
-  if(webviewPlugins.empty()){
-    webview_cef::stopCEF();
-  }
+  // if(webviewPlugins.empty()){
+  //   webview_cef::stopCEF();
+  // }
   G_OBJECT_CLASS(webview_cef_plugin_parent_class)->dispose(object);
 }
 
@@ -293,6 +294,17 @@ FLUTTER_PLUGIN_EXPORT void initCEFProcesses(int argc, char **argv)
 {
   CefMainArgs main_args(argc, argv);
   webview_cef::initCEFProcesses(main_args);
+}
+
+FLUTTER_PLUGIN_EXPORT gboolean terminateCEF(GtkWidget *widget, GdkEventKey *event, gpointer data) {
+  if (isShuttingDown) return FALSE;
+  isShuttingDown = true;
+  auto it = webviewPlugins.begin();
+  (*it).second->setAllClosedCallback([=]() {
+    gtk_window_close(GTK_WINDOW(widget));
+  });
+  (*it).second->closeAllBrowsers(false);
+  return TRUE;
 }
 
 FLUTTER_PLUGIN_EXPORT gboolean processKeyEventForCEF(GtkWidget *widget, GdkEventKey *event, gpointer data)

@@ -25,7 +25,8 @@ namespace webview_cef {
         void setInvokeMethodFunc(std::function<void(std::string, WValue*)> func);
         void setCreateTextureFunc(std::function<std::shared_ptr<WebviewTexture>()> func);
         bool getAnyBrowserFocused();
-
+        void setAllClosedCallback(std::function<void()> func);
+        void closeAllBrowsers(bool force_close);
     private :
         int cursorAction(WValue *args, std::string name);
     	std::function<void(std::string, WValue*)> m_invokeFunc;
@@ -38,6 +39,7 @@ namespace webview_cef {
 
     void initCEFProcesses(CefMainArgs args);
     void initCEFProcesses();
+    void shutdownCEF();
     void startCEF();
     void doMessageLoopWork();
     void SwapBufferFromBgraToRgba(void* _dest, const void* _src, int width, int height);

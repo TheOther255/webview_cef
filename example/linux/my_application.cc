@@ -8,15 +8,35 @@
 #include "flutter/generated_plugin_registrant.h"
 #include <webview_cef/webview_cef_plugin.h>
 
+#include <iostream>
+
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
 };
 
+gboolean shutdown = FALSE;
+
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+
+static void on_activate(GApplication* application, gpointer data){
+  g_print("activate signal\n");
+}
+
+// static gboolean on_window_close(GtkWidget *widget, GdkEvent *event, gpointer data) {
+
+//   g_print("close signal\n");
+//   if (!shutdown) {
+//     shutdown = TRUE;
+//     return TRUE;
+//   }
+//   return FALSE; // Returning FALSE lets the window close
+// }
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
+  std::cout << "my_application_activate" << std::endl;
+
   MyApplication* self = MY_APPLICATION(application);
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
@@ -57,6 +77,7 @@ static void my_application_activate(GApplication* application) {
   FlView* view = fl_view_new(project);
   g_signal_connect(view, "key_press_event", G_CALLBACK(processKeyEventForCEF), nullptr);
   g_signal_connect(view, "key_release_event", G_CALLBACK(processKeyEventForCEF), nullptr);
+  g_signal_connect(window, "delete-event", G_CALLBACK(terminateCEF), nullptr);
   gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
@@ -78,14 +99,39 @@ static gboolean my_application_local_command_line(GApplication* application, gch
      return TRUE;
   }
 
+  g_signal_connect(MY_APPLICATION(application), "activate", G_CALLBACK(on_activate), NULL);
+
   g_application_activate(application);
   *exit_status = 0;
 
   return TRUE;
 }
 
+// Implements GApplication::startup.
+static void my_application_startup(GApplication* application) {
+  //MyApplication* self = MY_APPLICATION(object);
+
+  // Perform any actions required at application startup.
+
+  g_print("my_application_startup\n");
+
+  G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
+}
+
+// Implements GApplication::shutdown.
+static void my_application_shutdown(GApplication* application) {
+  //MyApplication* self = MY_APPLICATION(object);
+
+  // Perform any actions required at application shutdown.
+
+  g_print("my_application_shutdown\n");
+
+  G_APPLICATION_CLASS(my_application_parent_class)->shutdown(application);
+}
+
 // Implements GObject::dispose.
 static void my_application_dispose(GObject* object) {
+  g_print("dispose class call\n");
   MyApplication* self = MY_APPLICATION(object);
   g_clear_pointer(&self->dart_entrypoint_arguments, g_strfreev);
   G_OBJECT_CLASS(my_application_parent_class)->dispose(object);
@@ -94,6 +140,8 @@ static void my_application_dispose(GObject* object) {
 static void my_application_class_init(MyApplicationClass* klass) {
   G_APPLICATION_CLASS(klass)->activate = my_application_activate;
   G_APPLICATION_CLASS(klass)->local_command_line = my_application_local_command_line;
+  G_APPLICATION_CLASS(klass)->startup = my_application_startup;
+  G_APPLICATION_CLASS(klass)->shutdown = my_application_shutdown;
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
 }
 

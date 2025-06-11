@@ -31,6 +31,7 @@ doc/api/
 .history
 .svn/
 migrate_working_dir/
+*/.sentry-native
 
 # IntelliJ related
 *.iml
@@ -68,5 +69,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# CEF related
 /macos/third/cef/Chromium Embedded Framework.framework
 /macos/third/cef/libcef_dll_wrapper.a
+/third/cef
