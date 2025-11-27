@@ -1,4 +1,4 @@
-set(cef_version "130.1.2%2Bg48f3ef6%2Bchromium-130.0.6723.44")
+set(cef_version "142.0.17%2Bg60aac24%2Bchromium-142.0.7444.176")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message(STATUS "current system is Linux")
@@ -192,7 +192,7 @@ function(build_cef filepath)
         # build 
         execute_process(COMMAND xcodebuild -project cef.xcodeproj -configuration Release -arch ${arch} WORKING_DIRECTORY "${filepath}/build")
         file(COPY_FILE "${filepath}/build/libcef_dll_wrapper/Release/libcef_dll_wrapper.a" "${filepath}/Release/libcef_dll_wrapper.a")
-        #file(REMOVE_RECURSE "${filepath}/build")
+        file(REMOVE_RECURSE "${filepath}/build")
     endif()
 
 endfunction(build_cef)

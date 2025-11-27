@@ -574,7 +574,7 @@ namespace webview_cef {
 		//cef message run in another thread on windows/linux
 		cefs.multi_threaded_message_loop = true;
 #endif
-		CefInitialize(mainArgs, cefs, app.get(), nullptr);
+		CefInitialize(mainArgs, cefs, app, nullptr);
 	}
 
 	void doMessageLoopWork(){
