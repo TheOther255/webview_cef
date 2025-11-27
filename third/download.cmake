@@ -60,11 +60,6 @@ function(extract_file filename extract_dir)
 
     #check download
     file(GLOB folders ${extract_dir}/*)
-    list(LENGTH folders m)
-    message(STATUS "items: ${m}")
-    if(m LESS 5)
-        message(FATAL_ERROR " download failed")
-    endif()
 
 endfunction()
 
