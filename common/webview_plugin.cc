@@ -4,6 +4,10 @@
 #include <include/wrapper/cef_library_loader.h>
 #endif
 
+#ifdef OS_WIN
+#include <WinUser.h>
+#endif // OS_WIN
+
 #include <math.h>
 #include <memory>
 #include <thread>
@@ -574,7 +578,15 @@ namespace webview_cef {
 		//cef message run in another thread on windows/linux
 		cefs.multi_threaded_message_loop = true;
 #endif
-		CefInitialize(mainArgs, cefs, app, nullptr);
+		if(!CefInitialize(mainArgs, cefs, app.get(), nullptr)) {
+			int exit_code = CefGetExitCode();
+#ifdef OS_WIN
+			if (exit_code == 38) {
+				MessageBoxA(NULL, "do not run this application\nwith elevated privileges!", "Cef runs elevated", MB_ICONERROR);
+			}
+#endif // OS_WIN
+			exit(exit_code);
+		}
 	}
 
 	void doMessageLoopWork(){

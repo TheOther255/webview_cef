@@ -398,8 +398,8 @@ bool webview_value_equals(WValue *a, WValue *b)
       {
       return false;
       }
-      const uint8_t *values_a = webview_value_get_uint8_list(a);
-      const uint8_t *values_b = webview_value_get_uint8_list(b);
+      std::vector values_a = webview_value_get_uint8_list(a);
+      std::vector values_b = webview_value_get_uint8_list(b);
       for (size_t i = 0; i < webview_value_get_len(a); i++)
       {
       if (values_a[i] != values_b[i])
@@ -415,8 +415,8 @@ bool webview_value_equals(WValue *a, WValue *b)
       {
       return false;
       }
-      const int32_t *values_a = webview_value_get_int32_list(a);
-      const int32_t *values_b = webview_value_get_int32_list(b);
+      std::vector values_a = webview_value_get_int32_list(a);
+      std::vector values_b = webview_value_get_int32_list(b);
       for (size_t i = 0; i < webview_value_get_len(a); i++)
       {
       if (values_a[i] != values_b[i])
@@ -432,8 +432,8 @@ bool webview_value_equals(WValue *a, WValue *b)
       {
       return false;
       }
-      const int64_t *values_a = webview_value_get_int64_list(a);
-      const int64_t *values_b = webview_value_get_int64_list(b);
+      std::vector values_a = webview_value_get_int64_list(a);
+      std::vector values_b = webview_value_get_int64_list(b);
       for (size_t i = 0; i < webview_value_get_len(a); i++)
       {
       if (values_a[i] != values_b[i])
@@ -449,8 +449,8 @@ bool webview_value_equals(WValue *a, WValue *b)
       {
       return false;
       }
-      const float *values_a = webview_value_get_float_list(a);
-      const float *values_b = webview_value_get_float_list(b);
+      std::vector values_a = webview_value_get_float_list(a);
+      std::vector values_b = webview_value_get_float_list(b);
       for (size_t i = 0; i < webview_value_get_len(a); i++)
       {
       if (values_a[i] != values_b[i])
@@ -466,8 +466,8 @@ bool webview_value_equals(WValue *a, WValue *b)
       {
       return false;
       }
-      const double *values_a = webview_value_get_double_list(a);
-      const double *values_b = webview_value_get_double_list(b);
+      std::vector values_a = webview_value_get_double_list(a);
+      std::vector values_b = webview_value_get_double_list(b);
       for (size_t i = 0; i < webview_value_get_len(a); i++)
       {
       if (values_a[i] != values_b[i])
@@ -611,39 +611,39 @@ const char* webview_value_get_string(WValue* self) {
   return v->value;
 }
 
-const uint8_t* webview_value_get_uint8_list(WValue* self) {
-  return_val_if_fail(self != nullptr, nullptr);
-  return_val_if_fail(self->type == Webview_Value_Type_Uint8_List, nullptr);
+const std::vector<uint8_t> webview_value_get_uint8_list(WValue* self) {
+  return_val_if_fail(self != nullptr, std::vector<uint8_t>()/*nullptr*/);
+  return_val_if_fail(self->type == Webview_Value_Type_Uint8_List, std::vector<uint8_t>());
   WValueUint8List* v = reinterpret_cast<WValueUint8List*>(self);
-  return v->values;
+  return std::vector<uint8_t>(v->values, v->values + v->values_length);
 }
 
-const int32_t* webview_value_get_int32_list(WValue* self) {
-  return_val_if_fail(self != nullptr, nullptr);
-  return_val_if_fail(self->type == Webview_Value_Type_Int32_List, nullptr);
+const std::vector<int32_t> webview_value_get_int32_list(WValue* self) {
+  return_val_if_fail(self != nullptr, std::vector<int32_t>());
+  return_val_if_fail(self->type == Webview_Value_Type_Int32_List, std::vector<int32_t>());
   WValueInt32List* v = reinterpret_cast<WValueInt32List*>(self);
-  return v->values;
+  return std::vector<int32_t>(v->values, v->values + v->values_length);
 }
 
-const int64_t* webview_value_get_int64_list(WValue* self) {
-  return_val_if_fail(self != nullptr, nullptr);
-  return_val_if_fail(self->type == Webview_Value_Type_Int64_List, nullptr);
+const std::vector<int64_t> webview_value_get_int64_list(WValue* self) {
+  return_val_if_fail(self != nullptr, std::vector<int64_t>());
+  return_val_if_fail(self->type == Webview_Value_Type_Int64_List, std::vector<int64_t>());
   WValueInt64List* v = reinterpret_cast<WValueInt64List*>(self);
-  return v->values;
+  return std::vector<int64_t>(v->values, v->values + v->values_length);
 }
 
-const float* webview_value_get_float_list(WValue* self) {
-  return_val_if_fail(self != nullptr, nullptr);
-  return_val_if_fail(self->type == Webview_Value_Type_Float_List, nullptr);
+const std::vector<float> webview_value_get_float_list(WValue* self) {
+  return_val_if_fail(self != nullptr, std::vector<float>());
+  return_val_if_fail(self->type == Webview_Value_Type_Float_List, std::vector<float>());
   WValueFloatList* v = reinterpret_cast<WValueFloatList*>(self);
-  return v->values;
+  return std::vector<float>(v->values, v->values + v->values_length);;
 }
 
-const double* webview_value_get_double_list(WValue* self) {
-  return_val_if_fail(self != nullptr, nullptr);
-  return_val_if_fail(self->type == Webview_Value_Type_Double_List, nullptr);
+const std::vector<double> webview_value_get_double_list(WValue* self) {
+  return_val_if_fail(self != nullptr, std::vector<double>());
+  return_val_if_fail(self->type == Webview_Value_Type_Double_List, std::vector<double>());
   WValueDoubleList* v = reinterpret_cast<WValueDoubleList*>(self);
-  return v->values;
+  return std::vector<double>(v->values, v->values + v->values_length);;
 }
 
 size_t webview_value_get_len(WValue *self)

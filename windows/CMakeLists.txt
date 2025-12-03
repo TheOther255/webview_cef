@@ -14,7 +14,7 @@ endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../third/download.cmake)
 # wait for unified version cef source code and prebuilt files
-prepare_prebuilt_files(${CMAKE_CURRENT_SOURCE_DIR}/../third/cef)
+prepare_cef_files(${CMAKE_CURRENT_SOURCE_DIR}/../third/cef)
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed
@@ -63,7 +63,7 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third/cef)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../third/cef)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
 
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin
@@ -81,35 +81,38 @@ set(webview_cef_bundled_libraries
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/resources/resources.pak"
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/resources/chrome_100_percent.pak"
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/resources/chrome_200_percent.pak"
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/chrome_elf.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/libcef.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/swiftshader>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/libEGL.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/libGLESv2.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/vulkan-1.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/debug/bin/vk_swiftshader_icd.json>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/chrome_elf.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libcef.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/swiftshader>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libEGL.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libGLESv2.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vulkan-1.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vk_swiftshader_icd.json>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/chrome_elf.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libcef.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/v8_context_snapshot.bin>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/swiftshader>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/d3dcompiler_47.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libEGL.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/libGLESv2.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vulkan-1.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vk_swiftshader.dll>
-    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/release/bin/vk_swiftshader_icd.json>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/chrome_elf.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/d3dcompiler_47.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/dxcompiler.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/dxil.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/libcef.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/libEGL.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/libGLESv2.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/v8_context_snapshot.bin>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/vk_swiftshader_icd.json>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/vk_swiftshader.dll>
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Debug/vulkan-1.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/chrome_elf.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/d3dcompiler_47.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/dxcompiler.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/dxil.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libcef.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libEGL.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libGLESv2.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/v8_context_snapshot.bin>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vk_swiftshader_icd.json>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vk_swiftshader.dll>
+    $<$<CONFIG:Release>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vulkan-1.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/chrome_elf.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/d3dcompiler_47.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/dxcompiler.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/dxil.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libcef.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libEGL.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/libGLESv2.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/v8_context_snapshot.bin>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vk_swiftshader_icd.json>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vk_swiftshader.dll>
+    $<$<CONFIG:Profile>:${CMAKE_CURRENT_SOURCE_DIR}/../third/cef/Release/vulkan-1.dll>
     PARENT_SCOPE)
 

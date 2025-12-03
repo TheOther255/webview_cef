@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <vector>
 
 #ifdef __cplusplus
-extern "C" {
+// extern "C" {
 #endif
 
 /**
@@ -62,11 +63,11 @@ float webview_value_get_float(WValue* value);
 double webview_value_get_double(WValue* value);
 const char* webview_value_get_string(WValue* value);
 size_t webview_value_get_len(WValue* value);
-const uint8_t* webview_value_get_uint8_list(WValue* value);
-const int32_t* webview_value_get_int32_list(WValue* value);
-const int64_t* webview_value_get_int64_list(WValue* value);
-const float* webview_value_get_float_list(WValue* value);
-const double* webview_value_get_double_list(WValue* value);
+const std::vector<uint8_t> webview_value_get_uint8_list(WValue* value);
+const std::vector<int32_t> webview_value_get_int32_list(WValue* value);
+const std::vector<int64_t> webview_value_get_int64_list(WValue* value);
+const std::vector<float> webview_value_get_float_list(WValue* value);
+const std::vector<double> webview_value_get_double_list(WValue* value);
 WValue* webview_value_get_list_value(WValue* value, size_t index);
 WValue* webview_value_get_key(WValue* value, size_t index);
 WValue* webview_value_get_value(WValue* value, size_t index);
@@ -75,6 +76,6 @@ WValue* webview_value_get_by_string(WValue* value, const char* key);
 char* webview_value_to_string(WValue* value);
 
 #ifdef __cplusplus
-}
+// }
 #endif
 #endif //WEBVIEW_CEF_VALUE_H_

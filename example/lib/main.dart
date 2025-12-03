@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     await WebviewManager().initialize(userAgent: "test/userAgent");
-    String url = "www.baidu.com";
+    String url = "http://google.com";
     _textController.text = url;
     //unified interface for all platforms set user agent
     _controller.setWebviewListener(WebviewEventsListener(
@@ -125,7 +125,7 @@ class _MyAppState extends State<MyApp> {
     //     _controller2.setJavaScriptChannels(jsChannels);
     //   },
     // ));
-    // await _controller2.initialize("baidu.com");
+    // await _controller2.initialize("http://google.com");
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling

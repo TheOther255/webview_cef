@@ -454,7 +454,7 @@ void WebviewHandler::imeSetComposition(int browserId, std::string text)
     CefString cTextStr = CefString(text);
 
     std::vector<CefCompositionUnderline> underlines;
-    cef_composition_underline_t underline = {};
+    CefCompositionUnderline underline = {};
     underline.range.from = 0;
     underline.range.to = static_cast<int>(0 + cTextStr.length());
     underline.color = ColorUNDERLINE;
@@ -586,7 +586,7 @@ void WebviewHandler::sendJavaScriptChannelCallBack(const bool error, const std::
 #if __linux__
         bool identifierMatch = std::stoll(frame->GetIdentifier().ToString()) == frameIdInt;
 #else
-        bool identifierMatch = frame->GetIdentifier() == frameIdInt;
+        bool identifierMatch = std::stoll(frame->GetIdentifier().ToString()) == frameIdInt;
 #endif
         if (identifierMatch)
         {
